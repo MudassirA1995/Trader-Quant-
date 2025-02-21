@@ -7,8 +7,9 @@ Python Based Library for Stock Analysts , Traders , Researchers and Data Scienti
 - [get_pe_ratio()](#get_pe_ratio)
 - [get_pb_ratio()](#get_pb_ratio)
 - [get_ps_ratio()](#get_ps_ratio)
-  
-
+- [get_ev_ebitdta()](#get_ev_ebitdta)
+- [get_gross_margin()](#get_gross_margin)  
+- [get_operating_margin()](#get_operating_margin)  
 
 
 
@@ -216,6 +217,193 @@ def get_ps_ratio(ticker):
 ```
 
 
+## get_ev_ebitdta()
+
+The Enterprise Value to EBITDA (EV/EBITDA) ratio is a widely used valuation metric that compares a company's total value (EV) to its Earnings Before Interest, Taxes, Depreciation, and Amortization (EBITDA). It provides a measure of how much an investor is willing to pay for a company's operational performance. The formula is:
+
+EV/EBITDA=Enterprise Value (EV)EBITDA\text{EV/EBITDA} = \frac{\text{Enterprise Value (EV)}}{\text{EBITDA}}EV/EBITDA=EBITDAEnterprise Value (EV)
+•	Enterprise Value (EV): The total valuation of a company, including equity, debt, and cash adjustments.
+•	EBITDA: A proxy for cash flow from operations, excluding non-operating expenses.
+
+
+
+## Why is EV/EBITDA Important?
+1.	Valuation Benchmark:
+o	A low EV/EBITDA ratio may indicate that a company is undervalued.
+o	A high EV/EBITDA ratio suggests higher valuation expectations, possibly due to strong growth potential.
+2.	Cross-Industry Comparison:
+o	Suitable for comparing companies across industries with different capital structures.
+3.	Operational Focus:
+o	Unlike other ratios, it focuses on operational performance without being affected by financing or accounting policies.
+
+
+## Use Case 
+
+![image](https://github.com/user-attachments/assets/56024cc1-5359-4cbe-b5ff-799d5a848ab7)
+
+## Source Code 
+
+```python
+
+def get_ev_ebitda(ticker):
+    # Fetch the stock data using yfinance
+    stock = yf.Ticker(ticker)
+    
+    try:
+        # Get the Enterprise Value
+        enterprise_value = stock.info['enterpriseValue']
+        
+        # Get the EBITDA
+        ebitda = stock.info['ebitda']
+        
+        # Calculate the EV/EBITDA ratio
+        ev_ebitda_ratio = enterprise_value / ebitda
+        
+        return ev_ebitda_ratio
+    except KeyError:
+        print(f"Unable to calculate EV/EBITDA ratio for {ticker}. Required data not available.")
+        return None
+
+
+```
+
+## get_gross_margin()
+
+
+Significance of the Financial Metric: Gross Margin
+Gross Margin is a profitability ratio that measures the percentage of revenue remaining after deducting the Cost of Goods Sold (COGS). It represents how efficiently a company produces and sells its products. The formula is:
+Gross Margin (%)=(Gross ProfitRevenue)×100\text{Gross Margin (\%)} = \left( \frac{\text{Gross Profit}}{\text{Revenue}} \right) \times 100Gross Margin (%)=(RevenueGross Profit)×100
+
+Where:
+•	Gross Profit = Revenue - Cost of Goods Sold (COGS)
+________________________________________
+Why is Gross Margin Important?
+1.	Operational Efficiency:
+o	Indicates how well a company controls its production costs relative to its sales.
+2.	Profitability Assessment:
+o	A higher gross margin implies a more profitable company, able to cover operating and non-operating expenses.
+3.	Industry Comparison:
+o	Enables benchmarking against competitors to evaluate cost management strategies.
+4.	Financial Health:
+o	A declining gross margin may indicate rising costs or inefficiencies, warranting further investigation.
+
+
+## Use Case 
+
+![image](https://github.com/user-attachments/assets/e5ef244f-6d1a-454c-bd20-655e204a3f78)
+
+## Source Code 
+
+
+```python
+
+def get_gross_margin(ticker):
+    try:
+        # Fetch the stock data
+        stock = yf.Ticker(ticker)
+        
+        # Get the financial data
+        financials = stock.financials
+        
+        # Calculate Gross Margin
+        revenue = financials.loc['Total Revenue'].iloc[0]
+        cogs = financials.loc['Cost Of Revenue'].iloc[0]
+        gross_profit = revenue - cogs
+        gross_margin = (gross_profit / revenue) * 100
+        
+        return round(gross_margin, 2)
+    except Exception as e:
+        print(f"Error calculating Gross Margin for {ticker}: {str(e)}")
+        return None
+
+```
+
+## How the Function Works
+
+1.	Input:
+o	ticker: The stock's ticker symbol (e.g., "AAPL" for Apple Inc.).
+2.	Fetching Stock Data:
+o	The yfinance library's Ticker object retrieves detailed stock data.
+o	The financials property provides the company's income statement.
+3.	Data Retrieval:
+o	Total Revenue: Total income generated from sales.
+o	Cost Of Revenue: Expenses directly associated with producing and delivering goods or services (COGS).
+4.	Gross Margin Calculation:
+o	Gross Profit = Total Revenue - Cost Of Revenue.
+o	Gross Margin (%) = (Gross Profit/Total Revenue)×100(\text{Gross Profit} / \text{Total Revenue}) \times 100(Gross Profit/Total Revenue)×100.
+o	The result is rounded to two decimal places for better readability.
+5.	Error Handling:
+o	If any data is missing or an error occurs (e.g., incorrect data labels, empty financials), an exception is caught, and a descriptive message is printed.
+6.	Output:
+o	Returns the Gross Margin (%) if successful, or None if an error occurs.
+
+
+
+## get_operating_margin()
+
+Significance of the Financial Metric: Operating Margin
+Operating Margin is a profitability ratio that measures the percentage of revenue remaining after covering the operating expenses of a company. It shows how efficiently a company manages its core operations to generate profit. The formula is:
+Operating Margin (%)=(Operating IncomeRevenue)×100\text{Operating Margin (\%)} = \left( \frac{\text{Operating Income}}{\text{Revenue}} \right) \times 100Operating Margin (%)=(RevenueOperating Income)×100
+Where:
+•	Operating Income: Revenue minus operating expenses, including costs such as wages, depreciation, and administrative expenses, but excluding taxes and interest.
+
+
+## Why is Operating Margin Important?
+1.	Efficiency Indicator:
+o	A higher operating margin indicates that the company generates more profit from its operations for every dollar of revenue.
+2.	Cost Management Insight:
+o	Reflects how well the company controls its operating costs.
+3.	Industry Comparisons:
+o	Allows for benchmarking against competitors within the same industry.
+4.	Financial Health:
+o	A declining operating margin might signal rising costs or decreasing efficiency, requiring further investigation.
+
+## Use Case 
+
+![image](https://github.com/user-attachments/assets/c949d514-38e8-4e46-85d3-b1fcacd9154f)
+
+## Source Code 
+
+
+
+```python
+
+def get_operating_margin(ticker):
+    try:
+        # Fetch the stock data
+        stock = yf.Ticker(ticker)
+        
+        # Get the financial data
+        financials = stock.financials
+        
+        # Calculate Operating Margin
+        revenue = financials.loc['Total Revenue'].iloc[0]
+        operating_income = financials.loc['Operating Income'].iloc[0]
+        operating_margin = (operating_income / revenue) * 100
+        
+        return round(operating_margin, 2)
+    except Exception as e:
+        print(f"Error calculating Operating Margin for {ticker}: {str(e)}")
+        return None
+
+
+```
+
+## How the Function Works
+1.	Input:
+o	ticker: The stock's ticker symbol (e.g., "AAPL" for Apple Inc.).
+2.	Fetching Stock Data:
+o	The yfinance library's Ticker object retrieves detailed financial data.
+3.	Data Retrieval:
+o	Total Revenue: Total income generated by the company from sales or services.
+o	Operating Income: Earnings from core business operations after deducting operating expenses.
+4.	Operating Margin Calculation:
+o	Formula: Operating Margin (%)=(Operating IncomeTotal Revenue)×100\text{Operating Margin (\%)} = \left( \frac{\text{Operating Income}}{\text{Total Revenue}} \right) \times 100Operating Margin (%)=(Total RevenueOperating Income)×100
+o	Rounds the result to two decimal places for clarity.
+5.	Error Handling:
+o	If any required financial data is missing or an error occurs (e.g., incorrect labels), the exception is caught, and a descriptive error message is printed.
+6.	Output:
+o	Returns the Operating Margin (%) if successful, or None if an error occurs.
 
 
 
